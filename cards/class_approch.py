@@ -1,11 +1,4 @@
-from enum import Enum
-
-
-class Suit(str, Enum):
-    Club = "♣"
-    Diamond = "♦"
-    Heart = "♥"
-    Spade = "♠"
+from cards.utils import Suit
 
 
 class Card:
