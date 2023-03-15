@@ -28,6 +28,12 @@ class FaceCard(Card):
 
 
 def card(rank: int, suit: Suit) -> Card:
+    """
+
+    :param rank:
+    :param suit:
+    :return:
+    """
     if rank == 1:
         return AceCard("A", suit)
     elif 2 <= rank < 11:

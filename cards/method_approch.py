@@ -16,10 +16,20 @@ class CardMethods:
         return f"Card {self.rank}, {self.suit}"
 
     def _points(self) -> Tuple[int, int]:
+        """
+        
+        :return:
+        """
         return int(self.rank), int(self.rank)
 
 
 def get_card(rank: int, suit: Suit) -> CardMethods:
+    """
+
+    :param rank:
+    :param suit:
+    :return:
+    """
     if rank == 1:
         return AceCard("A", suit)
     elif 2 <= rank < 11:
@@ -31,6 +41,12 @@ def get_card(rank: int, suit: Suit) -> CardMethods:
 
 
 def get_card_tuple_mapping(rank: int, suit: Suit) -> CardMethods:
+    """
+
+    :param rank:
+    :param suit:
+    :return:
+    """
     class_, rank_str = {
         1: (AceCard, "A"),
         11: (FaceCard, "J"),
@@ -41,6 +57,12 @@ def get_card_tuple_mapping(rank: int, suit: Suit) -> CardMethods:
 
 
 def get_card_partial_mapping(rank: int, suit: Suit) -> CardMethods:
+    """
+
+    :param rank:
+    :param suit:
+    :return:
+    """
     class_rank = {
         1: lambda suit: AceCard("A", suit),
         11: lambda suit: FaceCard("J", suit),
@@ -51,14 +73,26 @@ def get_card_partial_mapping(rank: int, suit: Suit) -> CardMethods:
 
 
 def get_deck():
+    """
+
+    :return:
+    """
     return [get_card(rank, suit) for rank in range(1, 14) for suit in iter(Suit)]
 
 
 class AceCard(CardMethods):
     def _points(self) -> Tuple[int, int]:
+        """
+
+        :return:
+        """
         return 1, 11
 
 
 class FaceCard(CardMethods):
     def _points(self) -> Tuple[int, int]:
+        """
+
+        :return:
+        """
         return 10, 10

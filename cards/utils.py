@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Suit(str, Enum):
-    Club = "♣"
-    Diamond = "♦"
-    Heart = "♥"
-    Spade = "♠"
+    CLUB = "♣"
+    DIAMOND = "♦"
+    HEART = "♥"
+    SPADE = "♠"
