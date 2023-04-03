@@ -7,7 +7,7 @@ class CardMethods:
     def __init__(self, rank: str, suit: str) -> None:
         self.suit = suit
         self.rank = rank
-        self.hand, self.soft = self._points()
+        self.hard, self.soft = self._points()
 
     def __str__(self):
         return f"Card {self.rank}, {self.suit}"
@@ -17,7 +17,7 @@ class CardMethods:
 
     def _points(self) -> Tuple[int, int]:
         """
-        
+
         :return:
         """
         return int(self.rank), int(self.rank)
