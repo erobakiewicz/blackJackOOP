@@ -1,50 +1,23 @@
 import random
-from typing import List, overload, Union, Optional, cast
+from typing import List, overload, Union, Optional, cast, Callable, Iterable
 
+from cards.card import Card, card, BlackJackCard, card21
 from cards.utils import Suit
 
 
-class Card:
-    def __init__(self, rank: str, suit: Suit, hard: int, soft: int) -> None:
-        self.rank = rank
-        self.suit = suit
-        self.hard = hard
-        self.soft = soft
-
-    def __repr__(self):
-        return f"Card {self.rank}, {self.suit}"
-
-
-class NumberCard(Card):
-    def __init__(self, rank: int, suit: Suit) -> None:
-        super().__init__(str(rank), suit, rank, rank)
-
-
-class AceCard(Card):
-    def __init__(self, rank: int, suit: Suit) -> None:
-        super().__init__("A", suit, 1, 11)
-
-
-class FaceCard(Card):
-    def __init__(self, rank: int, suit: Suit) -> None:
-        rank_str = {11: "J", 12: "Q", 13: "K"}[rank]
-        super().__init__(rank_str, suit, 10, 10)
-
-
-def card(rank: int, suit: Suit) -> Card:
-    """
-
-    :param rank:
-    :param suit:
-    :return:
-    """
-    if rank == 1:
-        return AceCard("A", suit)
-    elif 2 <= rank < 11:
-        return Card(str(rank), suit, rank, rank)
-    elif 11 <= rank < 14:
-        return FaceCard(rank, suit)
-    raise Exception("Design Failure")
+class Deck21(list):
+    def __init__(
+        self, decks: int = 6, factory: Callable[[int, Suit], BlackJackCard] = card21
+    ) -> None:
+        super().__init__()
+        for i in range(decks):
+            self.extend(
+                factory(r + 1, s) for r in range(13) for s in cast(Iterable[Suit], Suit)
+            )
+        random.shuffle(self)
+        burn = random.randint(1, 52)
+        for i in range(burn):
+            self.pop()
 
 
 class Deck:
@@ -170,3 +143,39 @@ class HandOverloadSplit:
 
     def __str__(self) -> str:
         return ", ".join(map(str, self.cards))
+
+
+class HandProperty:
+    def __init__(self, dealer_card: BlackJackCard, *cards: BlackJackCard) -> None:
+        self._cards: List[BlackJackCard] = list(cards)
+        self.dealer_card: BlackJackCard = dealer_card
+
+    def __str__(self) -> str:
+        return ", ".join(map(str, self.card))
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}"
+            f"({self.dealer_card!r}, "
+            f"{', '.join(map(repr, self.card))})"
+        )
+
+    @property
+    def card(self) -> List[BlackJackCard]:
+        return self._cards
+
+    @card.setter
+    def card(self, aCard: BlackJackCard) -> None:
+        raise NotImplemented
+
+    @card.deleter
+    def card(self, aCard: BlackJackCard) -> None:
+        raise NotImplemented
+
+    def split(self, deck: Deck21) -> "Hand":
+        assert self._cards[0].rank == self._cards[1].rank
+        c1 = self._cards[-1]
+        del self.card
+        self.card = deck.pop()
+        h_new = self.__class__(self.dealer_card, c1, deck.pop())
+        return h_new
